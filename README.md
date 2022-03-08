@@ -10,22 +10,30 @@
 
     python3 runner.py --help
 
-    usage: runner.py [-h] [-t THREADS] [-p PERIOD] [-proxy-timeout PROXY_TIMEOUT] [-rpc RPC] [-skip-proxy-init] targets [targets ...]
+    usage: runner.py [-h] 
+                     [-t THREADS] 
+                     [-p PERIOD]
+                     [--proxy-timeout PROXY_TIMEOUT]
+                     [--rpc RPC] 
+                     [--skip-proxy-init]
+                     targets [targets ...]
 
     positional arguments:
-      targets               List of targets, separated by spaces
+      targets                List of targets, separated by spaces
     
     optional arguments:
       -h, --help             show this help message and exit
-      -t THREADS             Number of threads per CPU core (default is 100)
-      -p PERIOD              How often to update the proxies (default is 300)
-      --proxy-timeout PROXY_TIMEOUT
-                             How many seconds to wait for the proxy to make a connection.
+      -t 100                 Number of threads per CPU core
+      -p 300                 How often to update the proxies
+      --proxy-timeout 3      How many seconds to wait for the proxy to make a connection.
                              Higher values give more proxies, but with lower speed/quality.
-                             It also takes more time (default is 3)
-      --rpc RPC              How many requests to send on a single proxy connection (default is 100)
-      --http-methods         List of HTTP(s) attack methods to use. Default is GET, STRESS, BOT, DOWNLOADER.
-                             Refer to MHDDoS docs for available options (https://github.com/MHProDev/MHDDoS)
+                             Parsing also takes more time
+
+      --rpc 100              How many requests to send on a single proxy connection
+      --http-methods GET     List of HTTP(s) attack methods to use.
+                             Default is GET, STRESS, BOT, DOWNLOADER.
+                             Refer to MHDDoS docs for available options
+                             (https://github.com/MHProDev/MHDDoS)
 
 # Examples
 
