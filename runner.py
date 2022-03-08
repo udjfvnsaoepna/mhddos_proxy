@@ -99,7 +99,7 @@ def init_argparse() -> argparse.ArgumentParser:
     parser.add_argument(
         '--proxy-timeout',
         dest='proxy_timeout',
-        metavar='PROXY_TIMEOUT',
+        metavar='TIMEOUT',
         type=float,
         default=3,
         help='How many seconds to wait for the proxy to make a connection. '

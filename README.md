@@ -13,13 +13,13 @@
     usage: runner.py [-h] 
                      [-t THREADS] 
                      [-p PERIOD]
-                     [--proxy-timeout PROXY_TIMEOUT]
+                     [--proxy-timeout TIMEOUT]
                      [--rpc RPC] 
-                     [--skip-proxy-init]
-                     targets [targets ...]
+                     [--http-methods METHOD [METHOD ...]]
+                     target [target ...]
 
     positional arguments:
-      targets                List of targets, separated by spaces
+      targets                List of targets, separated by space
     
     optional arguments:
       -h, --help             show this help message and exit
