@@ -36,7 +36,7 @@
     
     optional arguments:
       -h, --help             show this help message and exit
-      -t, --threads 100      Number of threads per CPU core (default is 100)
+      -t, --threads 1000     Total number of threads (default is 100 * CPU Cores)
       -p, --period 300       How often to update the proxies (default is 300)
       --proxy-timeout 3      How many seconds to wait for the proxy to make a connection.
                              Higher values give more proxies, but with lower speed/quality.

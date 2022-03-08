@@ -108,7 +108,7 @@ def init_argparse() -> argparse.ArgumentParser:
         '--threads',
         type=int,
         default=100 * multiprocessing.cpu_count(),
-        help='Total number of threads(default is 100 * CPU Cores)',
+        help='Total number of threads (default is 100 * CPU Cores)',
     )
     parser.add_argument(
         '-p',
