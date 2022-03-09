@@ -113,7 +113,3 @@ Get more proxies (possibly lower quality)
 Specific attack method(s) (two Cloudflare bypass methods in this case)
 
     python3 runner.py https://tvzvezda.ru --http-methods CFB CFBUAM
-
-# TODO
-
-- [ ] Docker image
