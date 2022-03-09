@@ -6,6 +6,7 @@ import random
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from MHDDoS.start import ProxyManager
 from PyRoxy import ProxyChecker
@@ -28,11 +29,23 @@ def update_proxies(period, proxy_timeout, threads, targets):
     CheckedProxies = []
     size = len(targets)
     print(f'{len(Proxies):,} Proxies are getting checked, this may take awhile:')
-    for target, chunk in zip(targets, (Proxies[i::size] for i in range(size))):
-        print(f'{len(chunk):,} Proxies are getting checked for {target}')
-        CheckedProxies.extend(
-            ProxyChecker.checkAll(chunk, timeout=proxy_timeout, threads=threads, url=target)
-        )
+
+    futures = []
+    with ThreadPoolExecutor(size) as executor:
+        for target, chunk in zip(targets, (Proxies[i::size] for i in range(size))):
+            print(f'{len(chunk):,} Proxies are getting checked for {target}')
+            futures.append(
+                executor.submit(
+                    ProxyChecker.checkAll,
+                    proxies=chunk,
+                    timeout=proxy_timeout,
+                    threads=threads // size,
+                    url=target
+                )
+            )
+
+        for future in as_completed(futures):
+            CheckedProxies.extend(future.result())
 
     if not CheckedProxies:
         exit("Proxy Check failed, Your network may be the problem | The target may not be available.")
