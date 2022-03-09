@@ -27,8 +27,9 @@ def update_proxies(period, proxy_timeout, threads, targets):
 
     CheckedProxies = []
     size = len(targets)
+    print(f'{len(Proxies):,} Proxies are getting checked, this may take awhile:')
     for target, chunk in zip(targets, (Proxies[i::size] for i in range(size))):
-        print(f'{len(chunk):,} Proxies are getting checked for {target}, this may take awhile...')
+        print(f'{len(chunk):,} Proxies are getting checked for {target}')
         CheckedProxies.extend(
             ProxyChecker.checkAll(chunk, timeout=proxy_timeout, threads=threads, url=target)
         )
