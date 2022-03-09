@@ -1,2 +1,0 @@
--r MHDDoS/requirements.txt
--r proxy-scraper-checker/requirements.txt
