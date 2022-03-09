@@ -30,7 +30,6 @@
                      [--rpc RPC] 
                      [--udp-threads UDP_THREADS]
                      [--debug]
-                     [--proxy-check-url URL]
                      [--http-methods METHOD [METHOD ...]]
 
     positional arguments:
@@ -45,9 +44,8 @@
                              Parsing also takes more time (default is 2)
 
       --debug                Enable debug output from MHDDoS
-      --rpc 100              How many requests to send on a single proxy connection (default is 100)
+      --rpc 50               How many requests to send on a single proxy connection (default is 50)
       --udp-threads 1        Threads to run per UDP target (default is 1)
-      --proxy-check-url URL  URL to check proxy is working (default is randomly selected target)
 
       --http-methods GET     List of HTTP(s) attack methods to use.
                              (default is GET, STRESS, BOT, DOWNLOADER)
