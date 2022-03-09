@@ -34,7 +34,7 @@ Wrapper script for running [MHDDoS](https://github.com/MHProDev/MHDDoS)
 - Ubuntu: https://docs.docker.com/engine/install/ubuntu/
 
 
-    docker pull portholeascend/mhddos_proxy:latest
+      docker pull portholeascend/mhddos_proxy:latest
 
 ## Running | Запуск
 
